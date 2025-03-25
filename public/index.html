@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        table { width: 60%; margin: 20px auto; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background-color: #f4f4f4; }
+        input { padding: 8px; margin: 5px; width: 150px; }
+        button { padding: 8px 12px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h2>Student Management System</h2>
+
+    <input type="text" id="name" placeholder="Name">
+    <input type="number" id="age" placeholder="Age">
+    <input type="text" id="grade" placeholder="Grade">
+    <button onclick="addStudent()">Add Student</button>
+
+    <h3>Student List</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Grade</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="studentTable"></tbody>
+    </table>
+
+    <script>
+        const apiUrl = "/students";  // API URL for backend
+
+        // Fetch all students and display them
+        async function fetchStudents() {
+            const response = await fetch(apiUrl);
+            const students = await response.json();
+            const studentTable = document.getElementById("studentTable");
+            studentTable.innerHTML = "";
+            students.forEach(student => {
+                studentTable.innerHTML += `
+                    <tr>
+                        <td>${student.id}</td>
+                        <td>${student.name}</td>
+                        <td>${student.age}</td>
+                        <td>${student.grade}</td>
+                        <td><button onclick="deleteStudent(${student.id})">Delete</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Add a new student
+        async function addStudent() {
+            const name = document.getElementById("name").value;
+            const age = document.getElementById("age").value;
+            const grade = document.getElementById("grade").value;
+
+            if (!name || !age || !grade) return alert("Please fill all fields");
+
+            await fetch(apiUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, age, grade }),
+            });
+
+            document.getElementById("name").value = "";
+            document.getElementById("age").value = "";
+            document.getElementById("grade").value = "";
+            fetchStudents();  // Refresh student list
+        }
+
+        // Delete a student
+        async function deleteStudent(id) {
+            await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
+            fetchStudents();
+        }
+
+        // Load students on page load
+        fetchStudents();
+    </script>
+
+</body>
+</html>

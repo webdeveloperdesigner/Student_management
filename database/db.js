@@ -1,11 +1,11 @@
 const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
-  host: '127.0.0.1',  // Force IPv4 connection
+  host: '127.0.0.1',  
   user: 'root',
-  password: 'mysql',  // Replace with your actual MySQL password
+  password: 'mysql', 
   database: 'student_db',
-  port: 3306  // Change if MySQL is running on a different port
+  port: 3306  
 });
 
 connection.connect(err => {
