@@ -1,14 +1,16 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const app = express();
 const studentRoutes = require('./routes/students');
 const db = require('./database/db');
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+app.use(express.json());
 
-app.use(bodyParser.json());
+
+app.get('/', (req, res) => {
+  res.send('Welcome to the Student Management API');
+});
+
 app.use('/students', studentRoutes);
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
